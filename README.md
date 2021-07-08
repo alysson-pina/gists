@@ -1,6 +1,6 @@
 ## This challenge implements an SPA for querying Github user's gists
 
-[snapshot](https://github.com/alysson-pina/gists/blob/master/snapshots/snapshot1.jpg)
+![snapshot](https://github.com/alysson-pina/gists/blob/master/snapshots/snapshot1.jpg)
 
 ## Available Scripts
 
