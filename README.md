@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+## This challenge implements an SPA for querying Github user's gists
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[snapshot](https://github.com/alysson-pina/gists/blob/master/snapshots/snapshot1.jpg)
 
 ## Available Scripts
 
