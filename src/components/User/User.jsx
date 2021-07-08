@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Container from './styles';
+import { OwnerType } from '../../types';
 
 const User = ({ user }) => (
   <Container>
@@ -11,7 +12,7 @@ const User = ({ user }) => (
 
 User.propTypes = {
   user: PropTypes.shape({
-    owner: PropTypes.objectOf(PropTypes.string),
+    ...OwnerType,
   }).isRequired,
 };
 

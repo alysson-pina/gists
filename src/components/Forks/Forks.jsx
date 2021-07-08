@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Octokit } from '@octokit/core';
+import { request } from '@octokit/request';
 import PropTypes from 'prop-types';
 import { Container, StatusError } from './styles';
 import { UsersList } from '..';
@@ -10,10 +10,8 @@ const Forks = React.memo(({ gistId }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const octokit = new Octokit();
-
       try {
-        const resp = await octokit.request(`/gists/${gistId}/forks`, {
+        const resp = await request(`GET /gists/${gistId}/forks`, {
           gist_id: gistId,
         });
 

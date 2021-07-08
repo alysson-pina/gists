@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Octokit } from '@octokit/core';
+import { request } from '@octokit/request';
 import { Gist } from './components';
 import {
   Button, Input, Container, StatusError,
@@ -11,9 +11,8 @@ const App = () => {
   const [error, setError] = useState('');
 
   const fetchData = useCallback(async () => {
-    const octokit = new Octokit();
     try {
-      const resp = await octokit.request(`/users/${userName}/gists`);
+      const resp = await request(`GET /users/${userName}/gists`);
 
       setData(resp && resp.data);
       setError(resp && resp.status !== 200 ? resp.status : '');

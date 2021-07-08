@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Octokit } from '@octokit/core';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import * as Octokit from '@octokit/request';
 import App from '../src/App';
 
 const gistsMock = [
@@ -37,24 +37,63 @@ describe('App test suite', () => {
     render(<App />);
   });
 
-  it('renders input field and search buttons', async () => {
-    const button = await screen.findByText('Search');
-    const searchbox = await screen.findByRole('searchbox');
+  describe('basic structure', () => {
+    it('renders input field and search buttons', async () => {
+      const button = await screen.findByText('Search');
+      const searchbox = await screen.findByRole('searchbox');
+  
+      expect(button).toBeInTheDocument();
+      expect(searchbox).toBeInTheDocument();
+    });
+  })
 
-    expect(button).toBeDefined(); // TODO: replace with toBeInTheDocument
-    expect(searchbox).toBeDefined(); // TODO: replace with toBeInTheDocument
-  });
+  describe('when data is available', () => {
+    it('renders gist when clicking on searchbox', async () => {
+      jest.spyOn(Octokit, 'request').mockImplementation(() => mockedResponse);
+  
+      const searchbox = await screen.findByRole('searchbox');
+      const button = await screen.findByText('Search');
 
-  it('renders gist when clicking on searchbox', async () => {
-    jest.spyOn(Octokit.prototype, 'request').and.mockImplementation(() => mockedResponse);
+      fireEvent.change(searchbox, { target: { value: 'test123' } });
+      act(() => {
+        fireEvent.click(button);
+      })
+  
+      const tag = await screen.findByText('application/javascript');
+      expect(tag).toBeInTheDocument();
 
-    const searchbox = await screen.findByRole('searchbox');
-    const button = await screen.findByText('Search');
+      const gistLink = await screen.findByText('Gist URL');
+      expect(gistLink).toBeInTheDocument();
 
-    fireEvent.change(searchbox, { target: { value: 'test123' } });
-    fireEvent.click(button);
+      // username should be present
+      const username = await screen.findByText(gistsMock[0].owner.login);
+      expect(username).toBeInTheDocument();
 
-    const tag = await screen.findByRole('application/javascript');
-    expect(tag).toBeDefined(); // TODO: replace with toBeInTheDocument
-  });
+      // avatar is present
+      const avatar = await screen.findByRole('img');
+      expect(avatar).toBeInTheDocument();
+    });
+  })
+
+  describe('when data is unavailable', () => {
+    it('does not render any other info', async () => {
+      jest.spyOn(Octokit, 'request').mockImplementation(() => []);
+  
+      const searchbox = await screen.findByRole('searchbox');
+      const button = await screen.findByText('Search');
+  
+      act(() => {
+        fireEvent.change(searchbox, { target: { value: 'test123' } });
+        fireEvent.click(button);
+      })
+
+      //no links are present
+      const links = screen.queryAllByRole('link');
+      expect(links).toHaveLength(0);
+
+      // no avatar is present
+      const avatar = screen.queryByRole('img');
+      expect(avatar).not.toBeInTheDocument();
+    });
+  })
 });

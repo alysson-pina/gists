@@ -20,7 +20,7 @@ const Gist = ({ data }) => (
       <div>Filetypes:</div>
       <Tags>
         {Object.keys(data.files).map(
-          (k) => <Tag data={data.files[k].type} />,
+          (k) => <Tag data={data.files[k].type} key={data.files[k].raw_url} />,
         )}
       </Tags>
     </Container>
@@ -36,7 +36,6 @@ Gist.propTypes = {
     created_at: PropTypes.string,
     description: PropTypes.string,
     id: PropTypes.string,
-    files: PropTypes.objectOf(PropTypes.string),
     url: PropTypes.string,
   }).isRequired,
 };
